@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuickDoubt – Math Solver</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4ff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 620px;
+      width: 100%;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: #4f46e5;
+      margin-bottom: 4px;
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      resize: vertical;
+      min-height: 100px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    textarea:focus { border-color: #4f46e5; }
+
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-top: 16px;
+      outline: none;
+      background: white;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 13px;
+      background: #4f46e5;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover { background: #4338ca; }
+    button:disabled { background: #a5b4fc; cursor: not-allowed; }
+
+    #result {
+      margin-top: 28px;
+      display: none;
+    }
+
+    .result-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #4f46e5;
+      margin-bottom: 10px;
+    }
+
+    .result-box {
+      background: #f8f9ff;
+      border: 1.5px solid #e0e7ff;
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #333;
+      white-space: pre-wrap;
+    }
+
+    .disclaimer {
+      margin-top: 12px;
+      font-size: 11px;
+      color: #aaa;
+      text-align: center;
+    }
+
+    .spinner {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      color: #888;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">⚡ QuickDoubt</div>
+    <div class="tagline">Type your math doubt. Get step-by-step help instantly.</div>
+
+    <label>Your Math Question</label>
+    <textarea id="question" placeholder="e.g. What is the area of a triangle with base 6cm and height 4cm?"></textarea>
+
+    <label style="margin-top:16px">Your Grade</label>
+    <select id="grade">
+      <option value="3">Grade 3</option>
+      <option value="4">Grade 4</option>
+      <option value="5">Grade 5</option>
+      <option value="6" selected>Grade 6</option>
+      <option value="7">Grade 7</option>
+      <option value="8">Grade 8</option>
+      <option value="9">Grade 9</option>
+      <option value="10">Grade 10</option>
+      <option value="12">Grade 11 / 12</option>
+    </select>
+
+    <button id="solveBtn" onclick="solve()">Solve My Doubt →</button>
+
+    <div class="spinner" id="spinner">⏳ Thinking step by step...</div>
+
+    <div id="result">
+      <div class="result-label">📘 Step-by-Step Solution</div>
+      <div class="result-box" id="answerBox"></div>
+      <div class="disclaimer">⚠️ AI can make mistakes — always verify with your teacher.</div>
+    </div>
+  </div>
+
+  <script>
+    async function solve() {
+      const question = document.getElementById('question').value.trim();
+      const grade = document.getElementById('grade').value;
+      const btn = document.getElementById('solveBtn');
+      const spinner = document.getElementById('spinner');
+      const result = document.getElementById('result');
+      const answerBox = document.getElementById('answerBox');
+
+      if (!question) {
+        alert('Please type your math question first!');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Solving...';
+      spinner.style.display = 'block';
+      result.style.display = 'none';
+
+      try {
+        const response = await fetch('/solve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question, grade })
+        });
+
+        const data = await response.json();
+        answerBox.textContent = data.answer || data.error;
+        result.style.display = 'block';
+      } catch (err) {
+        alert('Something went wrong. Make sure the server is running!');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Solve My Doubt →';
+        spinner.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
