@@ -6,7 +6,7 @@ A web app where students type a math doubt, select their grade, and get a clear 
 [Coming soon — deploying on Render]
 
 ## 🎯 Why I Built This
-Built as part of a Cuemath application challenge. The idea came from a real student pain point — when you're stuck on a math problem at night, there's no teacher around. QuickDoubt gives instant, grade-appropriate explanations.
+The idea came from a real student pain point — when you're stuck on a math problem at night, there's no teacher around. QuickDoubt gives instant, grade-appropriate explanations.
 
 ## ✨ Features
 - Type any math question and get step-by-step solution
